@@ -1,0 +1,62 @@
+create table TBL_ARTIST_201905(
+    ARTIST_ID char(4) not null,
+    ARTIST_NAME varchar2(20),
+    BIRTH char(8),
+    GENDER char(1),
+    TALENT char(1),
+    AGENCY varchar2(30),
+    primary key (ARTIST_ID)
+);
+
+insert into TBL_ARTIST_201905 values ( 'AA01','김스타','19970101','F','1','A엔터테인먼트');
+insert into TBL_ARTIST_201905 values ( 'AA02','조스타','19980201','M','2','B터테인먼트');
+insert into TBL_ARTIST_201905 values ( 'AA03','왕스타','19900301','M','3','C엔터테인먼트');
+insert into TBL_ARTIST_201905 values ( 'AA04','정스타','20000401','M','1','D엔터테인먼트');
+insert into TBL_ARTIST_201905 values ( 'AA05','홍스타','20010501','F','1','E엔터테인먼트');
+
+create table TBL_MENTO_201905(
+    MENTO_ID char(4) not null,
+    MENTO_NAME varchar2(20),
+    primary key (MENTO_ID)
+);
+
+insert into TBL_MENTO_201905 values ( 'J001', '함멘토');
+insert into TBL_MENTO_201905 values ( 'J002', '박멘토');
+insert into TBL_MENTO_201905 values ( 'J003', '장멘토');
+
+create table TBL_POINT_201905(
+    SERIAL_NO number(8) not null,
+    ARTIST_ID char(4),
+    MENTO_ID char(4),
+    SCORE number(3),
+    primary key (SERIAL_NO),
+    foreign key (ARTIST_ID) references TBL_ARTIST_201905(ARTIST_ID),
+    foreign key (MENTO_ID) references TBL_MENTO_201905(MENTO_ID)
+);
+
+insert into TBL_POINT_201905 values (  2019001, 'AA01', 'J001', 78);
+insert into TBL_POINT_201905 values (  2019002, 'AA01', 'J002', 76);
+insert into TBL_POINT_201905 values (  2019003, 'AA01', 'J003', 70);
+insert into TBL_POINT_201905 values (  2019004, 'AA02', 'J001', 80);
+insert into TBL_POINT_201905 values (  2019005, 'AA02', 'J002', 72);
+insert into TBL_POINT_201905 values (  2019006, 'AA02', 'J003', 78);
+insert into TBL_POINT_201905 values (  2019007, 'AA03', 'J001', 90);
+insert into TBL_POINT_201905 values (  2019008, 'AA03', 'J002', 92);
+insert into TBL_POINT_201905 values (  2019009, 'AA03', 'J003', 88);
+insert into TBL_POINT_201905 values (  2019010, 'AA04', 'J001', 96);
+insert into TBL_POINT_201905 values (  2019011, 'AA04', 'J002', 90);
+insert into TBL_POINT_201905 values (  2019012, 'AA04', 'J003', 98);
+insert into TBL_POINT_201905 values (  2019013, 'AA05', 'J001', 88);
+insert into TBL_POINT_201905 values (  2019014, 'AA05', 'J002', 86);
+insert into TBL_POINT_201905 values (  2019015, 'AA05', 'J003', 86);
+
+select * from TBL_ARTIST_201905;
+
+select * from TBL_MENTO_201905;
+
+select * from TBL_POINT_201905;
+
+select a.ARTIST_ID, a.ARTIST_NAME, sum(SCORE) as score, avg(SCORE) as avg, (select dense_rank() over (order by SCORE desc) from TBL_POINT_201905)
+from TBL_ARTIST_201905 a, TBL_POINT_201905 p
+where a.ARTIST_ID = p.ARTIST_ID
+group by a.ARTIST_ID, a.ARTIST_NAME;
